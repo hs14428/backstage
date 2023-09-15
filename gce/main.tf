@@ -19,12 +19,15 @@ resource "google_compute_instance" "backstage_vm" {
   }
 
   network_interface {
-    network = "default"
+    network = "backstage-vm"
   }
   # Some changes require full VM restarts
   # consider disabling this flag in production
   #   depending on your needs
   allow_stopping_for_update = true
+  shielded_instance_config {
+    enable_secure_boot = true
+  }
 }
 
 resource "google_compute_disk" "backstage_vm_compute_disk" {
