@@ -1,0 +1,69 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: landing-zone-template
+  title: GCP Landing Zone
+  description: Deploy a GCP landing zone
+spec:
+  owner: user:guest
+  type: service
+
+  parameters:
+    # Project Type
+    - title: Project Type
+      required:
+        - projectType
+      properties:
+        projectType:
+          title: Select Type
+          type: string
+          description: The project type to be used
+          default: gp2
+          enum:
+            - base
+            - peering
+            - restricted
+            - floating
+          enumNames:
+            - 'base'
+            - 'peering'
+            - 'restricted'
+            - 'floating'
+    # Project ID
+    - title: Cloud Build Project ID
+      required:
+        - projectId
+      properties:
+        projectId:
+          title: Project ID
+          type: string
+          description: "Project ID where the gcp-projects repository of your landing zone.  For example: p-b-cicd-189c."
+          ui:options:
+            rows: 5
+    # BU with own folder
+    - title: Business Unit with own folder?
+      required: ownFolder
+      properties:
+        ownFolder:
+          type: boolean
+          description: "For business units that have their own folder, set this value to true."
+          ui:widget: radio
+
+  steps:
+    # Each step executes an action, in this case one templates files into the working directory.
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          name: ${{ parameters.name }}
+
+  # Outputs are displayed to the user after a successful execution of the template.
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps.publish.output.projectType }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}

@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-github-workflows-terraform
+  description: An example of a Backstage application.
+  # Example for optional annotations
+  # annotations:
+  #   github.com/project-slug: backstage/backstage-tf-gce
+  #   backstage.io/techdocs-ref: dir:./docs
+spec:
+  type: service
+  owner: harry smith
+  lifecycle: experimental

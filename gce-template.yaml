@@ -1,0 +1,247 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: google-compute-engine-template
+  title: GCP Compute Engine
+  description: Spin up a GCP Compute Engine instance
+spec:
+  owner: user:guest
+  type: service
+
+  parameters:
+    - title: Instance Name
+      required:
+        - instanceName
+      properties:
+        instanceName:
+          title: Enter GCE Instance Name
+          type: string
+          description: The name of the instance
+          ui:options:
+            rows: 5
+          owner:
+            title: Owner
+            type: string
+            description: Owner of the component
+            default: user:guest
+            ui:field: OwnerPicker
+            ui:options:
+              catalogFilter:
+                kind: [Group, User]
+    - title: Choose a repo to deploy terraform from via Github Actions
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          value: terraform-gcp-${{ parameters.instanceName }}
+          ui:field: RepoUrlPicker
+          ui:options:
+            requestUserCredentials:
+              secretsKey: USER_OAUTH_TOKEN
+              additionalScopes:
+                github:
+                  - workflow
+            allowedHosts:
+              - github.com
+    # Project ID
+    - title: Project ID
+      required:
+        - projectId
+      properties:
+        projectId:
+          title: Project ID
+          type: string
+          description: "Project ID where GCE instance should be deployed to. For example: backstage-test-123456789."
+          ui:options:
+            rows: 5
+    # Deployment Environment
+    - title: Deployment Environment
+      required:
+        - deploymentEnvironment
+      properties:
+        deploymentEnvironment:
+          title: Deployment Environment
+          type: string
+          description: The deployment environment, e.g. dev, test, prod
+          default: dev
+          enum:
+            - dev
+            - test
+            - prod
+          enumNames:
+            - 'dev'
+            - 'test'
+            - 'prod'
+          ui:options:
+            rows: 5
+    - title: Deployment Region
+      required:
+        - deploymentRegion
+      properties:
+        deploymentRegion:
+          title: Deployment Region
+          type: string
+          description: The deployment region, e.g. europe-west2, europe-west3
+          default: europe-west2
+          enum:
+            - europe-west2
+            - europe-west3
+          enumNames:
+            - 'europe-west2'
+            - 'europe-west3'
+          ui:options:
+            rows: 5
+    - title: Deployment Zone
+      required:
+        - deploymentZone
+      properties:
+        deploymentZone:
+          title: Deployment Zone
+          type: string
+          description: The deployment zone, e.g. europe-west2-b, europe-west3-b
+          default: europe-west2-b
+          enum:
+            - europe-west2-a
+            - europe-west2-b
+            - europe-west2-c
+            - europe-west3-a
+            - europe-west3-b
+            - europe-west3-c
+          enumNames:
+            - 'europe-west2-a'
+            - 'europe-west2-b'
+            - 'europe-west2-c'
+            - 'europe-west3-a'
+            - 'europe-west3-b'
+            - 'europe-west3-c'
+          ui:options:
+            rows: 5
+    - title: Instance Machine Type
+      required:
+        - instanceMachineType
+      properties:
+        instanceMachineType:
+          title: Instance Machine Type
+          type: string
+          description: The instance machine type, e.g. n1-standard-1
+          default: n1-standard-1
+          enum:
+            - n1-standard-1
+            - n1-standard-2
+            - n1-standard-4
+            - n1-standard-8
+            - n1-standard-16
+            - n1-standard-32
+          enumNames:
+            - 'n1-standard-1'
+            - 'n1-standard-2'
+            - 'n1-standard-4'
+            - 'n1-standard-8'
+            - 'n1-standard-16'
+            - 'n1-standard-32'
+    - title: Instance Disk OS
+      required:
+        - instanceDiskOS
+      properties:
+        instanceDiskOS:
+          title: Instance Disk OS
+          type: string
+          description: The instance OS (x86/64 by default), e.g. Debian GNU/Linux 11 (bullseye) 
+          default: debian-cloud/debian-11
+          enum:
+            - debian-cloud/debian-10
+            - debian-cloud/debian-11
+            - debian-cloud/debian-12
+          enumNames:
+            - 'Debian GNU/Linux 10 (buster)'
+            - 'Debian GNU/Linux 11 (bullseye)'
+            - 'Debian GNU/Linux 12 (bookworm)'
+    - title: Instance Disk size
+      required:
+        - instanceDiskSize
+      properties:
+        instanceDiskSize:
+          title: Instance Disk size
+          type: string
+          description: The instance disk size, e.g. 10GB
+          default: '10'
+          enum:
+            - '10'
+            - '20'
+            - '30'
+            - '40'
+            - '50'
+            - '60'
+            - '70'
+            - '80'
+            - '90'
+            - '100'
+          enumNames:
+            - 10GB
+            - 20GB
+            - 30GB
+            - 40GB
+            - 50GB
+            - 60GB
+            - 70GB
+            - 80GB
+            - 90GB
+            - 100GB
+
+  steps:
+    # Each step executes an action, in this case one templates files into the working directory.
+    - id: only-development-environments
+      name: THIS PROCESS ONLY WORKS FOR DEV/TEST
+      if: ${{ parameters.deploymentEnvironment == 'prod' }}
+      action: debug:log
+      input:
+        message: "The following steps will fail. This service is only used for dev/test; you have requested deployment to a production environment."
+
+    - id: fetch-base
+      name: Fetch Base
+      if: ${{ parameters.deploymentEnvironment == 'dev' or parameters.deploymentEnvironment == 'test' }}
+      action: fetch:template
+      input:
+        url: ./gce
+        values:
+          instanceName: ${{ parameters.instanceName }}
+          projectId: ${{ parameters.projectId }}
+          deploymentRegion: ${{ parameters.deploymentRegion }}
+          deploymentZone: ${{ parameters.deploymentZone }}
+          instanceMachineType: ${{ parameters.instanceMachineType }}
+          deploymentEnvironment: ${{ parameters.deploymentEnvironment }}
+          instanceDiskOS: ${{ parameters.instanceDiskOS }}
+          instanceDiskSize: ${{ parameters.instanceDiskSize }}
+          repo_name: ${{ (parameters.repoUrl | parseRepoUrl)["repo"] }}
+          repo_owner: ${{ (parameters.repoUrl | parseRepoUrl)["owner"] }}
+  
+    # This step publishes the contents of the working directory to GitHub.
+    # Github actions then applys the terraform
+    - id: publish
+      name: Publish to repo
+      action: publish:github
+      input:
+        allowedHosts: ['github.com']
+        description: This is ${{ parameters.instanceName }}
+        repoUrl: ${{ parameters.repoUrl }}
+        allowAutoMerge: true
+        token: ${{ secrets.USER_OAUTH_TOKEN }}  # i think this can replace app-config github_token?
+
+    # The final step is to register our new component in the catalog.
+    - id: register
+      name: Register
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        catalogInfoPath: '/catalog-info.yaml'
+
+  # Outputs are displayed to the user after a successful execution of the template.
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps.publish.output.projectType }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}
