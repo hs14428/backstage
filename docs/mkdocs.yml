@@ -1,0 +1,8 @@
+site_name: hello world
+site_description: remember to update me later
+
+nav:
+  - Introduction: index.md
+
+plugins:
+  - techdocs-core
