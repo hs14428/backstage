@@ -4,10 +4,10 @@ metadata:
   name: backstage-github-workflows-terraform
   description: An example of a Backstage application.
   # Example for optional annotations
-  # annotations:
-  #   github.com/project-slug: backstage/backstage-tf-gce
-  #   backstage.io/techdocs-ref: dir:./docs
+  annotations:
+    github.com/project-slug: ${{ values.repo_owner }}/${{ values.repo_name }}
+    backstage.io/techdocs-ref: dir:./docs
 spec:
   type: service
-  owner: harry smith
+  owner: harry.smith@endava.com
   lifecycle: experimental

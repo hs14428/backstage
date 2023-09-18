@@ -219,13 +219,14 @@ spec:
     # This step publishes the contents of the working directory to GitHub.
     # Github actions then applys the terraform
     - id: publish
-      name: Publish to repo
-      action: publish:github
+      name: PR to a repo
+      action: publish:github:pull-request
       input:
         allowedHosts: ['github.com']
-        description: This is ${{ parameters.instanceName }}
-        repoUrl: ${{ parameters.repoUrl }}
-        allowAutoMerge: true
+        description: This is a PR for ${{ parameters.repoUrl }}
+        title: Trigger build for ${{ parameters.instanceName }}
+        repoUrl: https://github.com/hs14428/backstage/tree/master/gce
+        branchName: auto_merge_test_${{ parameters.instanceName }}
         token: ${{ secrets.USER_OAUTH_TOKEN }}
 
     # The final step is to register our new component in the catalog.
