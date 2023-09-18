@@ -1,7 +1,7 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: google-compute-engine-template
+  name: google-compute-engine-template-pr
   title: GCP Compute Engine
   description: Spin up a GCP Compute Engine instance
 spec:
