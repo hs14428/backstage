@@ -57,13 +57,13 @@ spec:
       input:
         url: ./content
         values:
-          name: ${{ parameters.name }}
+          name: 
 
   # Outputs are displayed to the user after a successful execution of the template.
   output:
     links:
       - title: Repository
-        url: ${{ steps.publish.output.projectType }}
+        url: 
       - title: Open in catalog
         icon: catalog
-        entityRef: ${{ steps.register.output.entityRef }}
+        entityRef: 

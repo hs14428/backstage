@@ -193,27 +193,27 @@ spec:
     # Each step executes an action, in this case one templates files into the working directory.
     - id: only-development-environments
       name: THIS PROCESS ONLY WORKS FOR DEV/TEST
-      if: ${{ parameters.deploymentEnvironment == 'prod' }}
+      if: false
       action: debug:log
       input:
         message: "The following steps will fail. This service is only used for dev/test; you have requested deployment to a production environment."
 
     - id: fetch-base
       name: Fetch Base
-      if: ${{ parameters.deploymentEnvironment == 'dev' or parameters.deploymentEnvironment == 'test' }}
+      if: false
       action: fetch:template
       input:
         url: https://github.com/hs14428/backstage/tree/master
         # url: https://github.com/hs14428/backstage/tree/master/gce
         values:
-          instanceName: ${{ parameters.instanceName }}
-          projectId: ${{ parameters.projectId }}
-          deploymentRegion: ${{ parameters.deploymentRegion }}
-          deploymentZone: ${{ parameters.deploymentZone }}
-          instanceMachineType: ${{ parameters.instanceMachineType }}
-          deploymentEnvironment: ${{ parameters.deploymentEnvironment }}
-          instanceDiskOS: ${{ parameters.instanceDiskOS }}
-          instanceDiskSize: ${{ parameters.instanceDiskSize }}
+          instanceName: 
+          projectId: 
+          deploymentRegion: 
+          deploymentZone: 
+          instanceMachineType: 
+          deploymentEnvironment: 
+          instanceDiskOS: 
+          instanceDiskSize: 
 
     # This step publishes the contents of the working directory to GitHub.
     # Github actions then applys the terraform
@@ -222,34 +222,34 @@ spec:
     #   action: publish:github
     #   input:
     #     allowedHosts: ['github.com']
-    #     description: This is ${{ parameters.instanceName }}
-    #     repoUrl: ${{ parameters.repoUrl }}
+    #     description: This is 
+    #     repoUrl: 
     #     allowAutoMerge: true
-    #     token: ${{ secrets.USER_OAUTH_TOKEN }}  # i think this can replace app-config github_token?
+    #     token:   # i think this can replace app-config github_token?
     - id: publish
       name: PR to a repo
       action: publish:github:pull-request
       input:
         allowedHosts: ['github.com']
-        description: This is a PR for ${{ parameters.repoUrl }}
-        title: Trigger build for ${{ parameters.instanceName }}
-        repoUrl: ${{ parameters.repoUrl }}
-        branchName: auto_merge_test_${{ parameters.instanceName }}
-        token: ${{ secrets.USER_OAUTH_TOKEN }}  # i think this can replace app-config github_token?
+        description: This is a PR for 
+        title: Trigger build for 
+        repoUrl: 
+        branchName: auto_merge_test_
+        token:   # i think this can replace app-config github_token?
 
     # The final step is to register our new component in the catalog.
     - id: register
       name: Register
       action: catalog:register
       input:
-        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        repoContentsUrl: 
         catalogInfoPath: '/catalog-info.yaml'
 
   # Outputs are displayed to the user after a successful execution of the template.
   output:
     links:
       - title: Repository
-        url: ${{ steps.publish.output.projectType }}
+        url: 
       - title: Open in catalog
         icon: catalog
-        entityRef: ${{ steps.register.output.entityRef }}
+        entityRef: 
