@@ -16,7 +16,7 @@ spec:
         instanceName:
           title: Enter GCE Instance Name
           type: string
-          description: The name of the instance
+          description: The name of the instance. Must be a match of regex '(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?)
           ui:options:
             rows: 5
           owner:
@@ -35,7 +35,6 @@ spec:
         repoUrl:
           title: Repository Location
           type: string
-          value: terraform-gcp-${{ parameters.instanceName }}
           ui:field: RepoUrlPicker
           ui:options:
             requestUserCredentials:
@@ -204,7 +203,8 @@ spec:
       if: ${{ parameters.deploymentEnvironment == 'dev' or parameters.deploymentEnvironment == 'test' }}
       action: fetch:template
       input:
-        url: ./gce
+        url: https://github.com/hs14428/backstage/tree/master
+        # url: https://github.com/hs14428/backstage/tree/master/gce
         values:
           instanceName: ${{ parameters.instanceName }}
           projectId: ${{ parameters.projectId }}
@@ -219,14 +219,24 @@ spec:
   
     # This step publishes the contents of the working directory to GitHub.
     # Github actions then applys the terraform
+    # - id: publish
+    #   name: Publish to repo
+    #   action: publish:github
+    #   input:
+    #     allowedHosts: ['github.com']
+    #     description: This is ${{ parameters.instanceName }}
+    #     repoUrl: ${{ parameters.repoUrl }}
+    #     allowAutoMerge: true
+    #     token: ${{ secrets.USER_OAUTH_TOKEN }}  # i think this can replace app-config github_token?
     - id: publish
-      name: Publish to repo
-      action: publish:github
+      name: PR to a repo
+      action: publish:github:pull-request
       input:
         allowedHosts: ['github.com']
-        description: This is ${{ parameters.instanceName }}
+        description: This is a PR for ${{ parameters.repoUrl }}
+        title: Trigger build for ${{ parameters.instanceName }}
         repoUrl: ${{ parameters.repoUrl }}
-        allowAutoMerge: true
+        branchName: auto_merge_test_${{ parameters.instanceName }}
         token: ${{ secrets.USER_OAUTH_TOKEN }}  # i think this can replace app-config github_token?
 
     # The final step is to register our new component in the catalog.
