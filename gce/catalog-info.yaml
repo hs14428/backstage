@@ -11,5 +11,5 @@ metadata:
     terraform.io/workspace: '${{ values.instanceName }}'
 spec:
   type: service
-  owner: ${{ values.owner }}
+  owner: ${{ values.repo_owner }}
   lifecycle: experimental
