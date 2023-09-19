@@ -1,13 +1,15 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: backstage-github-workflows-terraform
-  description: An example of a Backstage application.
-  # Example for optional annotations
+  name: "backstage_test1"
+  description: tbc update later
   annotations:
-    github.com/project-slug: ${{ values.repo_owner }}/${{ values.repo_name }}
     backstage.io/techdocs-ref: dir:./docs
+    github.com/project-slug: hs14428/backstage
+    # terraform.io/organization: ''
+    terraform.io/project: 'backstage-test-398910'
+    terraform.io/workspace: 'backstage_test1'
 spec:
   type: service
-  owner: harry.smith@endava.com
+  owner: hs14428
   lifecycle: experimental
