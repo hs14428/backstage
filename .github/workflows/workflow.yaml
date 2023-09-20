@@ -21,12 +21,12 @@ jobs:
       uses: actions/checkout@v2
 
     - name: cd into gce folder
-      if: github.ref == 'refs/heads/gce'
+      if: ${{ contains(github.base_ref, 'gce') }}
       id: cd_gce
       run: cd gce
 
     - name: cd into gcs folder
-      if: github.ref == 'refs/heads/gcs'
+      if: ${{ contains(github.base_ref, 'gce') }}
       id: cd_gcs
       run: cd gcs
 
