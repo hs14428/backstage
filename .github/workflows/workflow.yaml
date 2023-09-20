@@ -30,17 +30,24 @@ jobs:
         echo ${{ github.base_ref }} &&
         echo ${{ github.head_ref }} &&
         echo ${{ github.path }} &&
-        echo ${{ github.event_name }}
+        echo ${{ github.event_name }} &&
+        pwd
 
     - name: cd into gce folder
       if: ${{ contains(github.head_ref, 'gce') }}
       id: cd_gce
-      run: cd gce
+      run: |-
+        pwd &&
+        cd gce &&
+        pwd
 
     - name: cd into gcs folder
       if: github.ref == 'refs/heads/gcs'
       id: cd_gcs
       run: cd gcs
+
+    - name: pwd
+      run: pwd
 
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
