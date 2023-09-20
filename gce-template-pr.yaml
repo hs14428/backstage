@@ -195,14 +195,14 @@ spec:
   steps:
     # Each step executes an action, in this case one templates files into the working directory.
     - id: only-development-environments
-      name: GCE Instance Only Deployable to Dev/Test 
+      name: Dev/Test GCE Instances Only 
       if: ${{ parameters.deploymentEnvironment == 'dev' or parameters.deploymentEnvironment == 'test' }}
       action: debug:log
       input:
         message: "This service is only used for dev/test environments. Prod requests will skip the following steps."
 
     - id: fetch-base
-      name: Fetch Base
+      name: Template TF Files
       if: ${{ parameters.deploymentEnvironment == 'dev' or parameters.deploymentEnvironment == 'test' }}
       action: fetch:template
       input:
@@ -222,13 +222,13 @@ spec:
     # This step creates a pull request on GitHub to trigger the workflow
     # that runs the terraform steps
     - id: publish
-      name: PR to a repo
+      name: Trigger TF Build via PR
       if: ${{ parameters.deploymentEnvironment == 'dev' or parameters.deploymentEnvironment == 'test' }}
       action: publish:github:pull-request
       input:
         allowedHosts: ['github.com']
-        description: Create ${{ parameters.instanceName }} compute engine instance on GCP
-        title: Trigger build for ${{ parameters.instanceName }}
+        description: GCE - Create ${{ parameters.instanceName }} compute engine instance on GCP
+        title: GCE - Trigger build for ${{ parameters.instanceName }}
         repoUrl: ${{ parameters.repoUrl }}
         branchName: gce/${{ parameters.projectId }}-${{ parameters.instanceName }}
         targetPath: ./gce
