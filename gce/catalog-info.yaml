@@ -9,7 +9,9 @@ metadata:
     # terraform.io/organization: '${{ values.organization }}'
     terraform.io/project: '${{ values.projectId }}'
     terraform.io/workspace: '${{ values.instanceName }}'
+  links:
+    - url: "https://console.cloud.google.com/compute/instancesDetail/zones/${{ parameters.deploymentZone }}/instances/${{ parameters.instanceName }}?project=${{ parameters.projectId }}"
 spec:
   type: service
   owner: ${{ values.repo_owner }}
-  lifecycle: experimental
+  lifecycle: ${{ values.deploymentEnvironment }}
