@@ -1,10 +1,9 @@
-name: 'Terraform CI'
+name: 'Terraform workflow for gce instance creation'
 
 on:
-  push:
-    branches:
-    - master
   pull_request:
+    branches:
+    - 'gce/**'
 
 jobs:
   terraform:
@@ -21,6 +20,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: cd into gce folder
+      id: cd_gce
+      run: cd gce
+
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
@@ -33,11 +36,6 @@ jobs:
       run: terraform init
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-
-    # Checks that all Terraform configuration files adhere to a canonical format
-    # - name: Terraform Format
-    #   id: fmt
-    #   run: terraform fmt -check
 
     - name: Terraform Validate
       id: validate
@@ -54,7 +52,7 @@ jobs:
       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
     - name: Terraform Apply
       id: apply
-      if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+      if: github.ref == 'refs/heads/gce/**' && github.event_name == 'pull_request'
       run: terraform apply -auto-approve
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}

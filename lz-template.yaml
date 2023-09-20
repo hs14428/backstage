@@ -3,7 +3,10 @@ kind: Template
 metadata:
   name: landing-zone-template
   title: GCP Landing Zone
-  description: Deploy a GCP landing zone
+  description: WIP - Deploy a GCP landing zone
+  tags:
+    - gcp
+    - complete-project
 spec:
   owner: user:guest
   type: service

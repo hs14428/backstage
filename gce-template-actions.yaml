@@ -1,12 +1,13 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: google-compute-engine-template
-  title: GCP Compute Engine
+  name: google-compute-engine-template-actions
+  title: GCP Compute Engine via Github Actions Trigger
   description: Spin up a GCP Compute Engine instance
   tags:
     - gcp
     - compute
+    - gh-actions
 spec:
   owner: user:guest
   type: service
@@ -31,7 +32,7 @@ spec:
           ui:options:
             catalogFilter:
               kind: [Group, User]
-    - title: Choose a repo to deploy terraform from via Github Actions
+    - title: Authenticate to Github repo with workflows
       required:
         - repoUrl
       properties:
@@ -193,7 +194,6 @@ spec:
             - 100GB
 
   steps:
-    # Each step executes an action, in this case one templates files into the working directory.
     - id: only-development-environments
       name: THIS PROCESS ONLY WORKS FOR DEV/TEST
       if: ${{ parameters.deploymentEnvironment == 'prod' }}
@@ -201,15 +201,15 @@ spec:
       input:
         message: "The following steps will fail. This service is only used for dev/test; you have requested deployment to a production environment."
 
-    - id: fetch-base
-      name: Fetch Base
+    - id: trigger-github-actions
+      name: Trigger github actions workflow
       if: ${{ parameters.deploymentEnvironment == 'dev' or parameters.deploymentEnvironment == 'test' }}
-      action: fetch:template
+      action: github:actions:dispatch
       input:
-        url: https://github.com/hs14428/backstage/tree/master/gce
-        copyWithoutRender:
-          - .github/workflows/*
-        values:
+        repoUrl: ${{ parameters.repoUrl }}
+        workflowId: gce_workflow.yaml
+        branchOrTagName: master
+        workflowInputs:
           instanceName: ${{ parameters.instanceName }}
           projectId: ${{ parameters.projectId }}
           deploymentRegion: ${{ parameters.deploymentRegion }}
@@ -218,20 +218,6 @@ spec:
           deploymentEnvironment: ${{ parameters.deploymentEnvironment }}
           instanceDiskOS: ${{ parameters.instanceDiskOS }}
           instanceDiskSize: ${{ parameters.instanceDiskSize }}
-          repo_name: ${{ (parameters.repoUrl | parseRepoUrl)["repo"] }}
-          repo_owner: ${{ (parameters.repoUrl | parseRepoUrl)["owner"] }}
-  
-    # This step publishes the contents of the working directory to GitHub.
-    # Github actions then applys the terraform
-    - id: publish
-      name: Publish to repo
-      if: ${{ parameters.deploymentEnvironment == 'dev' or parameters.deploymentEnvironment == 'test' }}
-      action: publish:github
-      input:
-        allowedHosts: ['github.com']
-        description: This is ${{ parameters.instanceName }}
-        repoUrl: ${{ parameters.repoUrl }}
-        allowAutoMerge: true
         token: ${{ secrets.USER_OAUTH_TOKEN }}
 
     # The final step is to register our new component in the catalog.
@@ -240,14 +226,13 @@ spec:
       if: ${{ parameters.deploymentEnvironment == 'dev' or parameters.deploymentEnvironment == 'test' }}
       action: catalog:register
       input:
-        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
-        catalogInfoPath: '/catalog-info.yaml'
+        catalogInfoUrl: https://github.com/hs14428/backstage-gh-workflows/tree/master/gce/catalog-info.yaml'
 
   # Outputs are displayed to the user after a successful execution of the template.
   output:
     links:
-      - title: Repository
-        url: ${{ steps.publish.output.projectType }}
+      - title: Instance Location
+        url: "https://console.cloud.google.com/compute/instancesDetail/zones/${{ parameters.deploymentZone }}/instances/${{ parameters.instanceName }}?project=${{ parameters.projectId }}"
       - title: Open in catalog
         icon: catalog
         entityRef: ${{ steps.register.output.entityRef }}
