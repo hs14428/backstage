@@ -21,7 +21,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: cd into gce folder
-      if: ${{ contains(github.event.head_commit.message, 'gce') }}
+      if: ${{ contains(github.event.head_commit.message, 'GCE') }}
       id: cd_gce
       run: cd gce
 
