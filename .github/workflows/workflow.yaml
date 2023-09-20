@@ -24,7 +24,11 @@ jobs:
       run: |-
         echo ${{ github.ref_name }} &&
         echo ${{ github.ref }} &&
-        echo ${{ github.event.head_commit.message }}
+        echo ${{ github.event }} &&
+        echo ${{ github.base_ref }} &&
+        echo ${{ github.head_ref }} &&
+        echo ${{ github.workflow_ref }} &&
+        echo ${{ github.workflow }}
 
     - name: cd into gce folder
       if: ${{ contains(github.ref_name, 'gce') }}
