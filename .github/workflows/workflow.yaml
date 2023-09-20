@@ -20,6 +20,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: echo stuff
+      run: |-
+        echo ${{ github.ref_name }} &&
+        echo ${{ github.ref }} &&
+        echo ${{ github.event.head_commit.message }}
+
     - name: cd into gce folder
       if: ${{ contains(github.ref_name, 'gce') }}
       id: cd_gce
