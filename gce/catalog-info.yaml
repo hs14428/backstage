@@ -2,7 +2,7 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: "backstage-demo"
-  description: tbc update later
+  description: Hello, ive been updated
   annotations:
     backstage.io/techdocs-ref: dir:./docs
     github.com/project-slug: hs14428/backstage
