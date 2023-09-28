@@ -1,17 +1,17 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: ${{ values.instanceName | dump }}
+  name: "backstage-demo1"
   description: tbc update later
   annotations:
     backstage.io/techdocs-ref: dir:./docs
-    github.com/project-slug: ${{ values.repo_owner }}/${{ values.repo_name }}
-    # terraform.io/organization: '${{ values.organization }}'
-    terraform.io/project: '${{ values.projectId }}'
-    terraform.io/workspace: '${{ values.instanceName }}'
+    github.com/project-slug: hs14428/backstage
+    # terraform.io/organization: ''
+    terraform.io/project: 'backstage-test-398910'
+    terraform.io/workspace: 'backstage-demo1'
   links:
-    - url: "https://console.cloud.google.com/compute/instancesDetail/zones/${{ parameters.deploymentZone }}/instances/${{ parameters.instanceName }}?project=${{ parameters.projectId }}"
+    - url: "https://console.cloud.google.com/compute/instancesDetail/zones//instances/?project="
 spec:
   type: service
-  owner: ${{ values.repo_owner }}
-  lifecycle: ${{ values.deploymentEnvironment }}
+  owner: hs14428
+  lifecycle: dev
