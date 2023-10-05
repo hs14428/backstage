@@ -2,7 +2,7 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: ${{ values.instanceName | dump }}
-  description: tbc update later
+  description: A google cloud compute engine instance
   annotations:
     backstage.io/techdocs-ref: dir:./docs
     github.com/project-slug: ${{ values.repo_owner }}/${{ values.repo_name }}
@@ -10,8 +10,8 @@ metadata:
     terraform.io/project: '${{ values.projectId }}'
     terraform.io/workspace: '${{ values.instanceName }}'
   links:
-    - url: "https://console.cloud.google.com/compute/instancesDetail/zones/${{ parameters.deploymentZone }}/instances/${{ parameters.instanceName }}?project=${{ parameters.projectId }}"
+    - url: "https://console.cloud.google.com/compute/instancesDetail/zones/${{ values.deploymentZone }}/instances/${{ values.instanceName }}?project=${{ values.projectId }}"
 spec:
   type: service
-  owner: ${{ values.repo_owner }}
+  owner: user:harry.smith
   lifecycle: ${{ values.deploymentEnvironment }}
