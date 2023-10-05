@@ -19,7 +19,7 @@ resource "google_compute_instance" "backstage_vm" {
   }
 
   network_interface {
-    network = "backstage-vpc"
+    network = "backstage-main"
   }
   # Some changes require full VM restarts
   # consider disabling this flag in production
