@@ -1,17 +1,17 @@
 provider "google" {
-  project = "${{ values.projectId }}"
-  region  = "${{ values.deploymentRegion }}"
-  zone    = "${{ values.deploymentZone }}"
+  project = "backstage-demo-393313"
+  region  = "europe-west2"
+  zone    = "europe-west2-c"
 }
 
 resource "google_compute_instance" "backstage_vm" {
   provider = google
-  name = "${{ values.instanceName }}"
-  machine_type = "${{ values.instanceMachineType }}"
-  zone = "${{ values.deploymentZone }}"
+  name = "backstage-demo-1"
+  machine_type = "e2-micro"
+  zone = "europe-west2-c"
 
   labels = {
-    environment = "${{ values.deploymentEnvironment }}"
+    environment = "dev"
   }
 
   boot_disk {
@@ -30,14 +30,14 @@ resource "google_compute_instance" "backstage_vm" {
   }
 }
 
-resource "google_compute_disk" "${{ values. instanceName }}_compute_disk" {
+resource "google_compute_disk" "backstage-demo-1_compute_disk" {
   provider = google
   name = "backstage-vm-bootdisk"
   type = "pd-ssd"
-  zone = "${{ values.deploymentZone }}"
-  image = "${{ values.instanceDiskOS }}"
+  zone = "europe-west2-c"
+  image = "debian-cloud/debian-11"
   labels = {
-    environment = "${{ values.deploymentEnvironment }}"
+    environment = "dev"
   }
-  size = "${{ values.instanceDiskSize }}"
+  size = "10"
 }
