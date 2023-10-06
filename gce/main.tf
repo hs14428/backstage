@@ -30,7 +30,7 @@ resource "google_compute_instance" "backstage_vm" {
   }
 }
 
-resource "google_compute_disk" "backstage_vm_compute_disk" {
+resource "google_compute_disk" "${{ values. instanceName }}_compute_disk" {
   provider = google
   name = "backstage-vm-bootdisk"
   type = "pd-ssd"
