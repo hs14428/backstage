@@ -2,7 +2,7 @@ name: 'Terraform workflow for gce instance creation'
 
 on:
   pull_request:
-    branches:
+    branches-ignore:
     - master
 
 jobs:
