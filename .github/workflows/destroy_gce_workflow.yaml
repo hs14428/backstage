@@ -33,7 +33,7 @@ jobs:
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
 
-    - name: Terraform Validate
+    - name: Terraform Destroy
       id: validate
       run: terraform destroy
       env:
