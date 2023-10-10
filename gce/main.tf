@@ -7,7 +7,7 @@ provider "google" {
 resource "google_compute_instance" "backstage_vm" {
   provider = google
   name = "fasd1"
-  machine_type = "e2-micro"
+  machine_type = ""
   zone = "europe-west2-c"
 
   labels = {
@@ -35,9 +35,9 @@ resource "google_compute_disk" "backstage_vm_compute_disk" {
   name = "fasd1-bootdisk"
   type = "pd-ssd"
   zone = "europe-west2-c"
-  image = "debian-cloud/debian-11"
+  image = ""
   labels = {
     environment = "development"
   }
-  size = "10"
+  size = ""
 }
