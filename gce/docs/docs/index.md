@@ -1,5 +1,5 @@
-${{ values.instanceName }}
-${{ values.deploymentEnvironment }}
+sl-test-2
+development
 
 Getting started
 Start write your documentation by adding more markdown (.md) files to this folder (/docs) or replace the content in this file.
